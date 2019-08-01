@@ -46,7 +46,7 @@ class ReflectionAnnotation
     }
 
 
-    public function exportCache()
+    public static function exportCache()
     {
         return serialize(self::$_annotationCache);
     }
@@ -102,7 +102,7 @@ class ReflectionAnnotation
         $class = $reflection->getDeclaringClass()->getName();
         $property = $reflection->getName();
         if (!isset(self::$_annotationCache["$class::\$$property"])) {
-            self::$_annotationCache["$class::$property"] = array_map(function ($object) {
+            self::$_annotationCache["$class::\$$property"] = array_map(function ($object) {
                 return self::__construct__($object);
             }, self::getAnnotationReader()->getPropertyAnnotations($reflection));
         }
