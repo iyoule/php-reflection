@@ -19,6 +19,8 @@ class ReflectionAnnotation
 
     private static $instance;
 
+    private static $_annotationCache = [];
+
     /**
      * @return mixed
      */
@@ -44,8 +46,23 @@ class ReflectionAnnotation
     }
 
 
+    public function exportCache()
+    {
+        return serialize(self::$_annotationCache);
+    }
 
 
+    public static function importCache($cacheString)
+    {
+        self::$_annotationCache = unserialize($cacheString);
+        return true;
+    }
+
+    public static function importCacheFileOfPHP($file)
+    {
+        self::$_annotationCache = require($file);
+        return true;
+    }
 
 
     /**
@@ -76,38 +93,54 @@ class ReflectionAnnotation
 
     /**
      * @param ReflectionProperty $reflection
-     * @return array
+     * @return mixed
      * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
      */
     public static function fromPhpReflectionProperty(ReflectionProperty $reflection)
     {
-        return array_map(function ($object) {
-            return self::__construct__($object);
-        }, self::getAnnotationReader()->getPropertyAnnotations($reflection));
+        $class = $reflection->getDeclaringClass()->getName();
+        $property = $reflection->getName();
+        if (!isset(self::$_annotationCache["$class::\$$property"])) {
+            self::$_annotationCache["$class::$property"] = array_map(function ($object) {
+                return self::__construct__($object);
+            }, self::getAnnotationReader()->getPropertyAnnotations($reflection));
+        }
+        return self::$_annotationCache["$class::\$$property"];
     }
 
     /**
      * @param ReflectionClass $reflection
-     * @return array
+     * @return mixed
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public static function fromPhpReflectionClass(ReflectionClass $reflection)
     {
-        return array_map(function ($object) {
-            return self::__construct__($object);
-        }, self::getAnnotationReader()->getClassAnnotations($reflection));
+        $class = $reflection->getName();
+        if (!isset(self::$_annotationCache["$class::"])) {
+            self::$_annotationCache["$class::"] = array_map(function ($object) {
+                return self::__construct__($object);
+            }, self::getAnnotationReader()->getClassAnnotations($reflection));
+        }
+        return self::$_annotationCache["$class::"];
     }
 
     /**
      * @param ReflectionMethod $reflection
-     * @return array
+     * @return mixed
      * @throws \Doctrine\Common\Annotations\AnnotationException
+     * @throws \ReflectionException
      */
     public static function fromPhpReflectionMethod(ReflectionMethod $reflection)
     {
-        return array_map(function ($object) {
-            return self::__construct__($object);
-        }, self::getAnnotationReader()->getMethodAnnotations($reflection));
+        $class = $reflection->getDeclaringClass()->getName();
+        $method = $reflection->getName();
+        if (!isset(self::$_annotationCache["$class::$method"])) {
+            self::$_annotationCache["$class::$method"] = array_map(function ($object) {
+                return self::__construct__($object);
+            }, self::getAnnotationReader()->getMethodAnnotations($reflection));
+        }
+        return self::$_annotationCache["$class::$method"];
     }
 
 }
