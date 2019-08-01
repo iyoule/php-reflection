@@ -17,6 +17,9 @@ class ReflectionProperty extends \ReflectionProperty
     }
 
 
+    /**
+     * @return ReflectionType
+     */
     public function getType()
     {
         $type = new ReflectionType();

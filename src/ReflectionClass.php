@@ -39,7 +39,7 @@ class ReflectionClass extends \ReflectionClass
 
 
     /**
-     * @return false|ReflectionClass|\ReflectionClass
+     * @return false|ReflectionClass
      * @throws \ReflectionException
      */
     public function getParentClass()

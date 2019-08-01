@@ -9,7 +9,7 @@ class ReflectionFunction extends \ReflectionFunction
 
 
     /**
-     * @return NULL|\ReflectionType
+     * @return NULL|ReflectionType
      */
     public function getReturnType()
     {

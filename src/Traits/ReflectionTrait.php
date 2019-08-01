@@ -17,7 +17,7 @@ trait ReflectionTrait
 
 
     /**
-     * @return array
+     * @return ReflectionAnnotation[]
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function getAnnotations()
@@ -35,15 +35,15 @@ trait ReflectionTrait
 
     /**
      * @param $name
-     * @return array
+     * @return ReflectionAnnotation
      * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function getAnnotation($name)
     {
         if ($annotations = $this->getAnnotations()) {
             foreach ($annotations as $annotation) {
-                if ($annotation instanceof $name) {
-                    return $name;
+                if ($annotation->getName() == $name || $annotation->getShortName() == $name) {
+                    return $annotation;
                 }
             }
         }

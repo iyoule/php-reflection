@@ -7,10 +7,46 @@ namespace iyoule\Reflection;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
-abstract class ReflectionAnnotation
+class ReflectionAnnotation
 {
 
+
+    private $name;
+
+    private $shortName;
+
+    private $object;
+
     private static $instance;
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShortName()
+    {
+        return $this->shortName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getObject()
+    {
+        return $this->object;
+    }
+
+
+
+
+
 
     /**
      * @return AnnotationReader
@@ -28,6 +64,16 @@ abstract class ReflectionAnnotation
     }
 
 
+    private static function __construct__($object)
+    {
+        $model = new self();
+        $model->name = get_class($object);
+        $model->shortName = basename($model->name);
+        $model->object = $object;
+        return $model;
+    }
+
+
     /**
      * @param ReflectionProperty $reflection
      * @return array
@@ -35,7 +81,9 @@ abstract class ReflectionAnnotation
      */
     public static function fromPhpReflectionProperty(ReflectionProperty $reflection)
     {
-        return self::getAnnotationReader()->getPropertyAnnotations($reflection);
+        return array_map(function ($object) {
+            return self::__construct__($object);
+        }, self::getAnnotationReader()->getPropertyAnnotations($reflection));
     }
 
     /**
@@ -45,7 +93,9 @@ abstract class ReflectionAnnotation
      */
     public static function fromPhpReflectionClass(ReflectionClass $reflection)
     {
-        return self::getAnnotationReader()->getClassAnnotations($reflection);
+        return array_map(function ($object) {
+            return self::__construct__($object);
+        }, self::getAnnotationReader()->getClassAnnotations($reflection));
     }
 
     /**
@@ -55,7 +105,9 @@ abstract class ReflectionAnnotation
      */
     public static function fromPhpReflectionMethod(ReflectionMethod $reflection)
     {
-        return self::getAnnotationReader()->getMethodAnnotations($reflection);
+        return array_map(function ($object) {
+            return self::__construct__($object);
+        }, self::getAnnotationReader()->getMethodAnnotations($reflection));
     }
 
 }
