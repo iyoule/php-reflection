@@ -38,6 +38,10 @@ class ReflectionClass extends \ReflectionClass
     }
 
 
+    /**
+     * @return false|ReflectionClass|\ReflectionClass
+     * @throws \ReflectionException
+     */
     public function getParentClass()
     {
         $class = parent::getParentClass();
@@ -65,7 +69,7 @@ class ReflectionClass extends \ReflectionClass
 
     /**
      * @param null $filter
-     * @return \ReflectionProperty[]
+     * @return ReflectionProperty[]
      */
     public function getProperties($filter = null)
     {

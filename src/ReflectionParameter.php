@@ -11,7 +11,7 @@ class ReflectionParameter extends \ReflectionParameter
     use ReflectionDeclaringFunctionTrait;
 
     /**
-     * @return ReflectionType|NULL|\ReflectionType
+     * @return ReflectionType
      */
     public function getType()
     {
